@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { Mic, Coins, X, TriangleAlert, Eye, EyeOff, ArrowRight, Flag, Gavel } from 'lucide-vue-next';
+import { Mic, Coins, X, TriangleAlert, Eye, EyeOff, ArrowRight, Flag, Gavel, LogOut } from 'lucide-vue-next';
 import questionsData from '../assets/questions.json';
 
 const props = defineProps(['teams']);
@@ -87,106 +87,116 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 <template>
   <div class="game-screen">
 
-    <header class="glass-header">
-      <div class="team-badge blue" :class="{ 'is-active': activeTeam === 'team1' }" @click="setActiveTeam('team1')">
-        <div class="speaking-indicator" v-if="activeTeam === 'team1'">
-          <Mic :size="14" stroke-width="3" /> SPEAKING
+    <button @click="emit('quit')" class="top-exit-btn">
+      <LogOut :size="20" /> EXIT
+    </button>
+
+    <header class="game-header">
+
+      <div class="team-panel blue" :class="{ 'active': activeTeam === 'team1' }" @click="setActiveTeam('team1')">
+        <div class="mic-badge" v-if="activeTeam === 'team1'">
+          <Mic :size="14" /> SPEAKING
         </div>
-        <div class="team-name">{{ teams.team1.name }}</div>
-        <div class="team-total">{{ teams.team1.score }}</div>
+        <div class="t-name">{{ teams.team1.name }}</div>
+        <div class="t-score">{{ teams.team1.score }}</div>
         <button v-if="!pointsAwarded && roundScore > 0 && revealedCount >= 3" class="bank-btn" @click.stop="awardPoints('team1')">
-          <Coins :size="18" /> BANK HERE
+          <Coins :size="16" /> BANK
         </button>
       </div>
 
-      <div class="center-panel">
-        <button @click="emit('quit')" class="exit-btn">EXIT</button>
-
-        <div class="bank-display">
+      <div class="center-display">
+        <div class="bank-box">
           <span class="bank-label">BANK</span>
-          <span class="bank-amount">{{ roundScore }}</span>
+          <span class="bank-val">{{ roundScore }}</span>
         </div>
 
-        <div class="strikes-container">
-          <div class="strike-bulb" :class="{ 'lit': strikesCount >= 1 }"><X :size="28" stroke-width="4" /></div>
-          <div class="strike-bulb" :class="{ 'lit': strikesCount >= 2 }"><X :size="28" stroke-width="4" /></div>
-          <div class="strike-bulb" :class="{ 'lit': strikesCount >= 3 }"><X :size="28" stroke-width="4" /></div>
+        <div class="strikes-row">
+          <div class="x-mark" :class="{ 'lit': strikesCount >= 1 }">X</div>
+          <div class="x-mark" :class="{ 'lit': strikesCount >= 2 }">X</div>
+          <div class="x-mark" :class="{ 'lit': strikesCount >= 3 }">X</div>
         </div>
       </div>
 
-      <div class="team-badge red" :class="{ 'is-active': activeTeam === 'team2' }" @click="setActiveTeam('team2')">
-        <div class="speaking-indicator" v-if="activeTeam === 'team2'">
-          <Mic :size="14" stroke-width="3" /> SPEAKING
+      <div class="team-panel red" :class="{ 'active': activeTeam === 'team2' }" @click="setActiveTeam('team2')">
+        <div class="mic-badge" v-if="activeTeam === 'team2'">
+          <Mic :size="14" /> SPEAKING
         </div>
-        <div class="team-name">{{ teams.team2.name }}</div>
-        <div class="team-total">{{ teams.team2.score }}</div>
+        <div class="t-name">{{ teams.team2.name }}</div>
+        <div class="t-score">{{ teams.team2.score }}</div>
         <button v-if="!pointsAwarded && roundScore > 0 && revealedCount >= 3" class="bank-btn" @click.stop="awardPoints('team2')">
-          <Coins :size="18" /> BANK HERE
+          <Coins :size="16" /> BANK
         </button>
       </div>
+
     </header>
 
-    <main class="board-container">
+    <main class="board-area">
 
-      <div class="notification-area">
+      <div class="alert-container">
         <Transition name="pop">
-          <div v-if="revealedCount < 3" class="warning-banner">
-            <TriangleAlert :size="28" stroke-width="2.5" />
-            <span>FIND AT LEAST 3 ANSWERS TO BANK!</span>
-            <TriangleAlert :size="28" stroke-width="2.5" />
+          <div v-if="revealedCount < 3" class="alert-banner">
+            <TriangleAlert :size="24" />
+            <span>FIND 3 ANSWERS TO BANK</span>
+            <TriangleAlert :size="24" />
           </div>
         </Transition>
       </div>
 
-      <div class="question-banner">
-        <span class="round-badge">ROUND {{ currentRoundIndex + 1 }} / {{ rounds.length }}</span>
+      <div class="question-box">
+        <div class="round-tag">ROUND {{ currentRoundIndex + 1 }} / {{ rounds.length }}</div>
         <h1>{{ currentRound.question }}</h1>
       </div>
 
       <div class="answers-grid">
-        <div v-for="(answer, index) in currentRound.answers" :key="index" class="card-wrapper" @click="revealAnswer(answer)">
-          <div class="card" :class="{ 'flipped': answer.revealed }">
-            <div class="face front"><span class="num">{{ index + 1 }}</span></div>
-            <div class="face back">
-              <span class="text">{{ answer.text }}</span>
-              <span class="points">{{ answer.points }}</span>
+        <div v-for="(answer, index) in currentRound.answers" :key="index" class="flip-card" @click="revealAnswer(answer)">
+          <div class="inner" :class="{ 'flipped': answer.revealed }">
+            <div class="front">
+              <span class="number">{{ index + 1 }}</span>
+            </div>
+            <div class="back">
+              <span class="ans-text">{{ answer.text }}</span>
+              <span class="ans-points">{{ answer.points }}</span>
             </div>
           </div>
         </div>
       </div>
+
     </main>
 
     <footer class="game-footer">
-      <div class="controls-left">
-        <div class="cheat-sheet">
-          <button @click="showCheatSheet = !showCheatSheet" class="cheat-toggle">
-            <Eye v-if="showCheatSheet" />
-            <EyeOff v-else />
-          </button>
-          <div v-if="showCheatSheet" class="cheat-content">
-            <span v-for="(a, i) in currentRound.answers" :key="i"><b>{{i+1}}</b>:{{a.text}} </span>
-          </div>
+
+      <div class="left-tools">
+        <button @click="showCheatSheet = !showCheatSheet" class="icon-btn" title="Toggle Answers">
+          <Eye v-if="showCheatSheet" />
+          <EyeOff v-else />
+        </button>
+        <div v-if="showCheatSheet" class="cheat-list">
+          <span v-for="(a, i) in currentRound.answers" :key="i">{{ i+1 }}:{{ a.text }} </span>
         </div>
       </div>
-      <div class="controls-center">
-        <button @click="triggerStrike" class="action-btn strike-btn">
+
+      <div class="center-actions">
+        <button @click="triggerStrike" class="action-btn strike">
           <Gavel :size="20" /> STRIKE
         </button>
-        <button @click="revealRemainingAnswers" class="action-btn reveal-btn">
-          <Eye :size="20" /> REVEAL
+        <button @click="revealRemainingAnswers" class="action-btn reveal">
+          <Eye :size="20" /> REVEAL ALL
         </button>
-        <button @click="nextRound" class="action-btn next-btn" :class="{ 'pulse-animation': pointsAwarded }">
-          <span v-if="isLastRound">FINISH</span>
-          <span v-else>NEXT</span>
-          <Flag v-if="isLastRound" :size="20" />
-          <ArrowRight v-else :size="20" />
+        <button @click="nextRound" class="action-btn next" :class="{ 'pulse': pointsAwarded }">
+          <span v-if="isLastRound">FINISH GAME</span>
+          <span v-else>NEXT ROUND</span>
+          <ArrowRight v-if="!isLastRound" :size="20" />
+          <Flag v-else :size="20" />
         </button>
       </div>
-      <div class="controls-right"></div>
+
+      <div class="right-spacer"></div>
     </footer>
 
     <Transition name="strike-anim">
-      <div v-if="showStrike" class="strike-overlay"><div class="giant-x">X</div></div>
+      <div v-if="showStrike" class="strike-overlay">
+        <div class="giant-x">X</div>
+      </div>
     </Transition>
 
   </div>
@@ -194,138 +204,161 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 
 <style scoped>
 .game-screen {
-  width: 100vw; height: 100vh; display: flex; flex-direction: column;
-  background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
-  background-size: 50px 50px; overflow: hidden;
-}
-
-.glass-header {
-  width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 15px 40px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  min-height: 180px;
-  box-sizing: border-box;
-  z-index: 50;
+  width: 100vw; height: 100vh;
+  display: flex; flex-direction: column;
+  background: radial-gradient(circle at center, #004e92 0%, #000428 100%);
+  color: white; font-family: 'Arial', sans-serif; overflow: hidden;
   position: relative;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 }
 
-.center-panel { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; gap: 10px; }
-
-.exit-btn {
-  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #aaa;
-  font-family: 'Anton'; font-size: 0.8rem; padding: 5px 15px; border-radius: 20px;
-  cursor: pointer; transition: all 0.2s;
+/* --- BOUTON EXIT --- */
+.top-exit-btn {
+  position: absolute; top: 20px; right: 20px;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  color: #aaa; padding: 8px 15px; border-radius: 20px;
+  cursor: pointer; display: flex; align-items: center; gap: 5px;
+  font-family: 'Anton'; font-size: 0.9rem; z-index: 100;
+  transition: all 0.2s;
 }
-.exit-btn:hover { background: rgba(231, 76, 60, 0.8); color: white; border-color: #e74c3c; }
+.top-exit-btn:hover { background: #c0392b; color: white; border-color: #c0392b; }
 
-.team-badge {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 220px; padding: 10px; background: rgba(0, 0, 0, 0.4);
-  border-radius: 15px; border: 3px solid transparent; cursor: pointer; transition: all 0.3s;
-  position: relative; opacity: 0.5; transform: scale(0.95); user-select: none;
+/* --- HEADER --- */
+.game-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 20px 60px; height: 160px;
 }
-.team-badge.is-active { opacity: 1; transform: scale(1.05); background: rgba(0, 0, 0, 0.7); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10; }
-.team-badge.blue.is-active { border-color: #3498db; box-shadow: 0 0 20px rgba(52, 152, 219, 0.6); }
-.team-badge.red.is-active { border-color: #e74c3c; box-shadow: 0 0 20px rgba(231, 76, 60, 0.6); }
 
-.team-name { font-size: 1.2rem; font-weight: bold; letter-spacing: 1px; color: #fff; pointer-events: none; }
-.team-total { font-size: 3rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 2px 2px 0 #000; pointer-events: none; }
-.speaking-indicator {
-  position: absolute; top: -12px; background: #f1c40f; color: black; font-weight: bold;
-  padding: 2px 10px; border-radius: 10px; font-size: 0.8rem; animation: float 2s infinite;
+.team-panel {
+  width: 250px; padding: 15px; background: rgba(0,0,0,0.3);
+  border-radius: 15px; border: 2px solid transparent;
+  display: flex; flex-direction: column; align-items: center;
+  position: relative; transition: all 0.3s; opacity: 0.6; cursor: pointer;
+}
+.team-panel.active { opacity: 1; transform: scale(1.05); background: rgba(0,0,0,0.6); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.team-panel.blue.active { border-color: #3498db; }
+.team-panel.red.active { border-color: #e74c3c; }
+
+.mic-badge {
+  position: absolute; top: -10px; background: #f1c40f; color: black;
+  font-size: 0.7rem; font-weight: bold; padding: 2px 10px; border-radius: 10px;
   display: flex; align-items: center; gap: 5px;
 }
+.t-name { font-weight: bold; margin-bottom: 5px; letter-spacing: 1px; }
+.t-score { font-family: 'Anton'; font-size: 3rem; line-height: 1; }
 .bank-btn {
-  margin-top: 5px; background: #27ae60; color: white; border: none;
-  padding: 5px 15px; border-radius: 20px; font-weight: bold; cursor: pointer;
-  font-family: 'Anton', sans-serif; animation: bounce 1s infinite;
-  display: flex; align-items: center; gap: 8px;
+  margin-top: 10px; background: #27ae60; border: none; color: white;
+  padding: 5px 20px; border-radius: 20px; font-weight: bold; cursor: pointer;
+  display: flex; align-items: center; gap: 5px; animation: bounce 1s infinite;
 }
 
-.bank-display {
-  text-align: center; background: linear-gradient(135deg, #2c3e50, #000000);
-  padding: 5px 40px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+.center-display {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.bank-box {
+  background: linear-gradient(135deg, #34495e, #2c3e50);
+  padding: 10px 50px; border-radius: 10px; border: 2px solid #7f8c8d;
+  text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
 }
 .bank-label { display: block; font-size: 0.8rem; color: #bdc3c7; letter-spacing: 2px; }
-.bank-amount { font-size: 3.5rem; font-weight: bold; color: white; }
+.bank-val { font-family: 'Anton'; font-size: 3.5rem; line-height: 1; }
 
-.strikes-container { display: flex; gap: 20px; margin-top: 5px; }
-.strike-bulb {
-  font-family: Arial, sans-serif; font-weight: 900; font-size: 2rem;
-  color: rgba(255, 255, 255, 0.2); background: rgba(0,0,0,0.3);
-  border: 2px solid rgba(255, 255, 255, 0.2); width: 45px; height: 45px;
+.strikes-row { display: flex; gap: 15px; }
+.x-mark {
+  font-family: 'Anton'; font-size: 2rem; color: #444;
+  background: rgba(0,0,0,0.3); width: 40px; height: 40px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 50%; transition: all 0.2s;
+  border-radius: 5px; border: 2px solid #444; transition: all 0.2s;
 }
-.strike-bulb.lit {
-  color: #fff; background: #e74c3c; border-color: #c0392b;
-  box-shadow: 0 0 20px #e74c3c, 0 0 40px #e74c3c; transform: scale(1.1);
+.x-mark.lit {
+  color: #fff; background: #c0392b; border-color: #e74c3c;
+  box-shadow: 0 0 15px #e74c3c; transform: scale(1.1);
 }
 
-/* CONTAINER PRINCIPAL MODIFIÉ : On pousse le contenu vers le bas */
-.board-container {
+/* --- BOARD AREA --- */
+.board-area {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 100%; max-width: 1400px; margin: 0 auto;
-  padding-top: 20px; /* Ajoute de l'espace pour ne pas coller au Header */
-  z-index: 1;
+  gap: 20px; width: 100%; max-width: 1200px; margin: 0 auto;
 }
 
-.notification-area {
-  display: flex; align-items: center; justify-content: center; width: 100%;
-  margin-bottom: 20px;
-  height: 60px;
+.alert-container { height: 50px; display: flex; align-items: center; justify-content: center; }
+.alert-banner {
+  background: #f1c40f; color: black; padding: 8px 30px; border-radius: 30px;
+  font-weight: bold; font-family: 'Anton'; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.3); border: 2px solid black;
 }
 
-.warning-banner {
-  background: #f1c40f; color: black; font-family: 'Anton', sans-serif; font-size: 1.5rem;
-  padding: 10px 30px; border: 4px solid black; border-radius: 50px;
-  text-transform: uppercase; letter-spacing: 1px;
-  box-shadow: 5px 5px 0px black;
-  display: flex; align-items: center; gap: 15px;
-  z-index: 10;
+.question-box {
+  background: rgba(0,0,0,0.6); padding: 20px 40px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1); position: relative; text-align: center; width: 80%;
 }
-
-.question-banner {
-  background: rgba(0, 0, 0, 0.6); padding: 15px 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
-  text-align: center; margin-bottom: 20px; backdrop-filter: blur(5px); position: relative; width: 80%;
+.round-tag {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: #3498db; color: white; font-weight: bold; font-size: 0.8rem;
+  padding: 4px 15px; border-radius: 10px;
 }
-.round-badge { background: #f1c40f; color: #000; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); }
-.question-banner h1 { margin: 0; font-size: 2.2rem; color: white; text-transform: uppercase; font-family: 'Anton', sans-serif; letter-spacing: 1px; }
+.question-box h1 { margin: 0; font-family: 'Anton'; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 1px; }
 
-.answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 80%; }
-.card-wrapper:last-child:nth-child(odd) { grid-column: span 2; width: 50%; margin: 0 auto; }
-.card-wrapper { height: 80px; perspective: 1000px; cursor: pointer; }
-.card { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
-.card.flipped { transform: rotateX(180deg); }
-.face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1); }
-.front { background: linear-gradient(135deg, #005f9e 0%, #003b64 100%); }
-.front .num { font-size: 2.5rem; font-family: 'Anton'; color: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.2); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-.back { background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); transform: rotateX(180deg); justify-content: space-between; padding: 0 30px; color: #2c3e50; }
-.text { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; }
-.points { font-size: 2rem; background: #000; color: #fff; padding: 5px 15px; border-radius: 5px; font-family: 'Anton'; }
+.answers-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 90%;
+}
+.flip-card { height: 70px; perspective: 1000px; cursor: pointer; }
+.flip-card:last-child:nth-child(odd) { grid-column: span 2; width: 60%; margin: 0 auto; }
 
-.game-footer { padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); width: 100%; box-sizing: border-box; }
-.controls-center { display: flex; gap: 20px; }
+.inner {
+  position: relative; width: 100%; height: 100%; transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+.inner.flipped { transform: rotateX(180deg); }
+
+.front, .back {
+  position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+}
+.front { background: linear-gradient(135deg, #003b64, #001f3f); }
+.front .number {
+  background: #001f3f; color: white; width: 40px; height: 40px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-family: 'Anton'; font-size: 1.5rem; border: 2px solid #3498db;
+}
+.back {
+  background: linear-gradient(135deg, #f1c40f, #f39c12); color: black;
+  transform: rotateX(180deg); justify-content: space-between; padding: 0 30px;
+}
+.ans-text { font-family: 'Anton'; font-size: 1.6rem; text-transform: uppercase; }
+.ans-points { font-family: 'Anton'; font-size: 1.6rem; background: black; color: white; padding: 2px 12px; border-radius: 5px; }
+
+/* --- FOOTER --- */
+.game-footer {
+  height: 80px; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
+}
+.left-tools, .right-spacer { width: 200px; }
+.center-actions { display: flex; gap: 20px; }
+
 .action-btn {
-  border: none; padding: 10px 30px; border-radius: 50px; font-family: 'Anton';
-  font-size: 1.2rem; cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
-  display: flex; align-items: center; gap: 10px;
+  border: none; padding: 10px 25px; border-radius: 30px; font-family: 'Anton';
+  font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; gap: 8px;
+  transition: transform 0.2s;
 }
-.strike-btn { background: rgba(231, 76, 60, 0.2); border: 2px solid #e74c3c; color: #e74c3c; } .strike-btn:hover { background: #e74c3c; color: white; }
-.next-btn { background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.5); } .next-btn:hover { background: white; color: #2c3e50; }
-.reveal-btn { background: rgba(155, 89, 182, 0.2); border: 2px solid #9b59b6; color: #9b59b6; } .reveal-btn:hover { background: #9b59b6; color: white; }
-.pulse-animation { background: #2ecc71; color: white; border-color: #2ecc71; box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); animation: pulse-green 2s infinite; }
+.action-btn:hover { transform: translateY(-3px); }
+.strike { background: #c0392b; color: white; }
+.reveal { background: #8e44ad; color: white; }
+.next { background: white; color: #2c3e50; }
+.pulse { animation: pulseGreen 1.5s infinite; background: #2ecc71; color: white; }
 
-.cheat-sheet { display: flex; align-items: center; gap: 10px; }
-.cheat-toggle { background: none; border: none; cursor: pointer; opacity: 0.5; color: white; display: flex; align-items: center; }
-.cheat-content { font-size: 0.9rem; color: #aaa; background: rgba(0,0,0,0.8); padding: 5px 15px; border-radius: 10px; display: flex; gap: 10px; }
-.strike-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
-.giant-x { font-size: 30rem; font-weight: 900; color: #ff0000; text-shadow: 0 0 50px red, 0 0 100px red; animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+.icon-btn { background: none; border: 1px solid #555; color: #aaa; padding: 8px; border-radius: 50%; cursor: pointer; }
+.icon-btn:hover { color: white; border-color: white; }
+.cheat-list { position: absolute; bottom: 80px; left: 40px; background: rgba(0,0,0,0.9); padding: 10px; border-radius: 10px; color: #aaa; font-size: 0.8rem; }
 
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+/* --- OVERLAY --- */
+.strike-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+  display: flex; justify-content: center; align-items: center; z-index: 9999;
+}
+.giant-x { font-size: 25rem; font-family: 'Anton'; color: #c0392b; animation: shake 0.5s; text-shadow: 0 0 50px red; }
+
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes pulse-green { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(46, 204, 113, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
-@keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+@keyframes pulseGreen { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(46, 204, 113, 0); } }
+@keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-8px, 0, 0); } 40%, 60% { transform: translate3d(8px, 0, 0); } }
 </style>

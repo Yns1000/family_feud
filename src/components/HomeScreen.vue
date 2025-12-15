@@ -207,7 +207,7 @@ const emit = defineEmits(['go-to-setup', 'go-to-hotseat', 'reset-data', 'go-to-m
 /* FOOTER */
 .team-footer {
   background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px);
-  padding: 10px 40px; border-radius: 20px 20px 0 0;
+  padding: 20px 40px; border-radius: 20px 20px 0 0;
   border-top: 1px solid rgba(255,255,255,0.1);
   display: flex; flex-direction: column; align-items: center; gap: 5px;
   width: 100%; max-width: 600px;
