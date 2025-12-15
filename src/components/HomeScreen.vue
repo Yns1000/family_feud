@@ -4,7 +4,7 @@ import logoCentrale from '../assets/ig2i_white.png';
 import logoThyltech from '../assets/thyltech_logo_name_white.png';
 
 defineProps(['teams']);
-const emit = defineEmits(['go-to-setup', 'go-to-hotseat', 'reset-data', 'go-to-motus']);
+const emit = defineEmits(['go-to-setup', 'go-to-hotseat', 'reset-data', 'go-to-motus', 'go-to-millionaire']);
 </script>
 
 <template>
@@ -28,20 +28,20 @@ const emit = defineEmits(['go-to-setup', 'go-to-hotseat', 'reset-data', 'go-to-m
 
     <div class="hero-content">
 
-      <div class="icon-floating">
-        <Gamepad2 :size="80" color="#f1c40f" stroke-width="1.5" />
+      <div class="logo-area">
+        <div class="icon-floating">
+          <Gamepad2 :size="80" color="#f1c40f" stroke-width="1.5" />
+        </div>
+
+        <h1 class="game-title">
+          <span class="line-1">ENGLISH</span>
+          <span class="line-2">GAME STATION</span>
+        </h1>
+
+        <div class="edition-badge">SELECT A GAME MODE</div>
       </div>
 
-      <h1 class="game-title">
-        <span class="line-1">ENGLISH</span>
-        <span class="line-2">GAME STATION</span>
-      </h1>
-
-      <div class="edition-badge">
-        SELECT A GAME MODE
-      </div>
-
-      <div class="game-selection">
+      <div class="game-grid">
 
         <button @click="emit('go-to-setup')" class="game-btn feud-btn">
           <Play :size="32" fill="currentColor" />
@@ -59,20 +59,23 @@ const emit = defineEmits(['go-to-setup', 'go-to-hotseat', 'reset-data', 'go-to-m
           </div>
         </button>
 
-        <div class="game-selection">
+        <button @click="emit('go-to-motus')" class="game-btn motus-btn">
+          <div class="icon-box-motus">M</div>
+          <div class="btn-text">
+            <span class="main">MOTUS</span>
+            <span class="sub">WORD GUESSING</span>
+          </div>
+        </button>
 
-          <button @click="emit('go-to-motus')" class="game-btn motus-btn">
-            <div class="icon-box-motus">M</div>
-            <div class="btn-text">
-              <span class="main">MOTUS</span>
-              <span class="sub">WORD GUESSING</span>
-            </div>
-          </button>
-
-        </div>
+        <button @click="emit('go-to-millionaire')" class="game-btn millionaire-btn">
+          <div class="icon-box-mil">$</div>
+          <div class="btn-text">
+            <span class="main">MILLIONAIRE</span>
+            <span class="sub">QUIZ LADDER</span>
+          </div>
+        </button>
 
       </div>
-
     </div>
 
     <footer class="team-footer">
@@ -97,127 +100,119 @@ const emit = defineEmits(['go-to-setup', 'go-to-hotseat', 'reset-data', 'go-to-m
 </template>
 
 <style scoped>
+/* STRUCTURE GLOBALE */
 .home-screen {
-  width: 100vw; height: 100vh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  /* Flex Column permet de gérer l'espace vertical proprement */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Espace entre le haut, le contenu et le footer */
+  align-items: center;
   background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
   background-size: 50px 50px;
-  position: relative; overflow: hidden;
+  position: relative;
+  overflow-y: auto; /* Permet le scroll si l'écran est petit */
+  overflow-x: hidden;
 }
 
+/* SESSION INFO */
 .session-info {
   position: absolute; top: 20px; right: 20px;
   display: flex; align-items: center; gap: 20px;
-  background: rgba(0, 0, 0, 0.6); padding: 10px 25px; border-radius: 30px;
-  border: 1px solid rgba(255,255,255,0.2); animation: slideDown 0.5s;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  background: rgba(0, 0, 0, 0.6); padding: 8px 20px; border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.2); z-index: 20;
 }
-
-.current-teams {
-  color: white; font-family: 'Anton'; letter-spacing: 1px; font-size: 1.1rem;
-  display: flex; align-items: center; gap: 10px;
-}
-
-.blue { color: #3498db; }
-.red { color: #e74c3c; }
-.score { color: white; opacity: 0.8; font-family: Arial, sans-serif; font-weight: bold; }
-.vs-sep { color: #aaa; font-size: 0.8rem; margin: 0 5px; }
-
-.reset-btn {
-  background: #e74c3c; color: white; border: none; padding: 8px 15px;
-  border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px;
-  font-family: 'Anton'; font-size: 0.9rem; transition: background 0.2s;
-}
+.current-teams { color: white; font-family: 'Anton'; letter-spacing: 1px; font-size: 1rem; display: flex; gap: 10px; }
+.blue { color: #3498db; } .red { color: #e74c3c; } .vs-sep { color: #aaa; margin: 0 5px; } .score { color: white; opacity: 0.8; }
+.reset-btn { background: #e74c3c; color: white; border: none; padding: 5px 12px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: 'Anton'; font-size: 0.8rem; }
 .reset-btn:hover { background: #c0392b; }
 
+/* CONTENU CENTRAL */
 .hero-content {
-  text-align: center;
-  display: flex; flex-direction: column; align-items: center;
-  animation: zoomIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 10;
+  flex: 1; /* Prend toute la place disponible */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0; /* Un peu d'air en haut et en bas */
+  transform: scale(0.95); /* Petite astuce pour tout faire rentrer sur les petits écrans */
 }
 
-.icon-floating {
-  margin-bottom: 10px;
-  animation: float 3s infinite ease-in-out;
-  filter: drop-shadow(0 0 15px rgba(241, 196, 15, 0.5));
-}
+.logo-area { text-align: center; margin-bottom: 30px; animation: zoomIn 0.8s; }
+.icon-floating { margin-bottom: 5px; animation: float 3s infinite ease-in-out; filter: drop-shadow(0 0 15px rgba(241, 196, 15, 0.5)); }
+.game-title { display: flex; flex-direction: column; font-family: 'Anton', sans-serif; line-height: 0.85; margin: 0; text-transform: uppercase; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+.line-1 { font-size: 3.5rem; color: white; letter-spacing: 5px; }
+.line-2 { font-size: 6rem; color: #f1c40f; letter-spacing: 5px; text-shadow: 4px 4px 0 #000; }
+.edition-badge { background: white; color: black; font-family: Arial, sans-serif; font-weight: bold; font-size: 0.9rem; letter-spacing: 3px; padding: 5px 20px; border-radius: 50px; margin-top: 15px; display: inline-block; }
 
-.game-title {
-  display: flex; flex-direction: column;
-  font-family: 'Anton', sans-serif;
-  line-height: 0.85; margin: 0;
-  text-transform: uppercase;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-}
-
-.line-1 { font-size: 4rem; color: white; letter-spacing: 5px; }
-.line-2 {
-  font-size: 7rem; color: #f1c40f; letter-spacing: 5px;
-  text-shadow: 4px 4px 0 #000;
-}
-
-.edition-badge {
-  background: white; color: black;
-  font-family: Arial, sans-serif; font-weight: bold; font-size: 1rem; letter-spacing: 3px;
-  padding: 5px 20px; border-radius: 50px;
-  margin-top: 20px; margin-bottom: 40px;
-}
-
-.game-selection {
-  display: flex; gap: 30px;
+/* GRILLE DES BOUTONS (LE 2x2 STRICT) */
+.game-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 colonnes égales */
+  gap: 25px;
+  animation: slideUp 0.8s;
 }
 
 .game-btn {
-  border: none; padding: 20px 40px; border-radius: 20px;
-  cursor: pointer; display: flex; align-items: center; gap: 20px;
+  border: none; padding: 15px 30px; border-radius: 20px;
+  cursor: pointer; display: flex; align-items: center; gap: 15px;
   transition: all 0.2s; position: relative; overflow: hidden;
-  width: 350px;
+  width: 320px; /* Largeur fixe pour uniformité */
+  height: 90px;
 }
 
 .btn-text { display: flex; flex-direction: column; text-align: left; }
-.btn-text .main { font-family: 'Anton'; font-size: 2rem; line-height: 1; }
-.btn-text .sub { font-family: Arial; font-size: 0.8rem; opacity: 0.8; letter-spacing: 1px; margin-top: 5px; }
+.btn-text .main { font-family: 'Anton'; font-size: 1.8rem; line-height: 1; }
+.btn-text .sub { font-family: Arial; font-size: 0.75rem; opacity: 0.8; letter-spacing: 1px; margin-top: 4px; }
 
-.feud-btn { background: #2ecc71; color: white; box-shadow: 0 10px 0 #27ae60; }
-.feud-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 0 #27ae60; background: #2ecc71; }
-.feud-btn:active { transform: translateY(5px); box-shadow: 0 0 0; }
+/* COULEURS DES JEUX */
+.feud-btn { background: #27ae60; color: white; box-shadow: 0 8px 0 #219150; }
+.feud-btn:hover { transform: translateY(-4px); box-shadow: 0 12px 0 #219150; filter: brightness(1.1); }
+.feud-btn:active { transform: translateY(4px); box-shadow: 0 0 0; }
 
-.hotseat-btn { background: #e74c3c; color: white; box-shadow: 0 10px 0 #c0392b; }
-.hotseat-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 0 #c0392b; background: #e74c3c; }
-.hotseat-btn:active { transform: translateY(5px); box-shadow: 0 0 0; }
+.hotseat-btn { background: #c0392b; color: white; box-shadow: 0 8px 0 #96281b; }
+.hotseat-btn:hover { transform: translateY(-4px); box-shadow: 0 12px 0 #96281b; filter: brightness(1.1); }
+.hotseat-btn:active { transform: translateY(4px); box-shadow: 0 0 0; }
 
+.motus-btn { background: #2980b9; color: white; box-shadow: 0 8px 0 #2c3e50; }
+.motus-btn:hover { transform: translateY(-4px); box-shadow: 0 12px 0 #2c3e50; filter: brightness(1.1); }
+.motus-btn:active { transform: translateY(4px); box-shadow: 0 0 0; }
 
+/* STYLE MILLIONAIRE (CORRIGÉ) */
+.millionaire-btn {
+  /* Dégradé Bleu Nuit -> Violet style TV */
+  background: linear-gradient(135deg, #090979 0%, #2c3e50 100%);
+  color: white;
+  box-shadow: 0 8px 0 #000040;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.millionaire-btn:hover { transform: translateY(-4px); box-shadow: 0 12px 0 #000040; filter: brightness(1.2); }
+.millionaire-btn:active { transform: translateY(4px); box-shadow: 0 0 0; }
+
+/* ICONES PERSONNALISÉES */
+.icon-box-motus { width: 35px; height: 35px; background: #e74c3c; color: white; font-family: 'Anton'; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; border-radius: 5px; border: 2px solid white; }
+.icon-box-mil { width: 35px; height: 35px; background: #f1c40f; color: black; font-family: 'Anton'; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid white; }
+
+/* FOOTER */
 .team-footer {
-  position: absolute; bottom: 30px;
   background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px);
-  padding: 15px 40px; border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 40px; border-radius: 20px 20px 0 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
   display: flex; flex-direction: column; align-items: center; gap: 5px;
-  animation: slideUp 1s ease-out 0.5s backwards;
+  width: 100%; max-width: 600px;
+  margin-bottom: 0; /* Collé au bas */
 }
 
-.logos-container { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-.footer-logo { max-height: 30px; width: auto; object-fit: contain; }
+.logos-container { display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
+.footer-logo { max-height: 25px; width: auto; object-fit: contain; }
 .logo-separator { margin: 0 15px; }
-
-.team-label { display: flex; align-items: center; gap: 8px; color: #bdc3c7; font-size: 0.8rem; letter-spacing: 2px; }
-.team-names { display: flex; align-items: center; gap: 15px; color: white; font-family: 'Anton', sans-serif; font-size: 1.2rem; letter-spacing: 1px; }
-.dot { color: #f1c40f; font-size: 1.5rem; line-height: 0; }
-.member { text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+.team-label { display: flex; align-items: center; gap: 8px; color: #bdc3c7; font-size: 0.7rem; letter-spacing: 2px; }
+.team-names { display: flex; align-items: center; gap: 15px; color: white; font-family: 'Anton', sans-serif; font-size: 1rem; letter-spacing: 1px; }
+.dot { color: #f1c40f; font-size: 1.2rem; line-height: 0; }
 
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-
-.motus-btn { background: #34495e; color: white; box-shadow: 0 10px 0 #2c3e50; }
-.motus-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 0 #2c3e50; background: #34495e; }
-.motus-btn:active { transform: translateY(5px); box-shadow: 0 0 0; }
-
-.icon-box-motus {
-  width: 40px; height: 40px; background: #e74c3c; color: white;
-  font-family: 'Anton'; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
-  border-radius: 5px; border: 2px solid white;
-}
 </style>

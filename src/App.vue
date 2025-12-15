@@ -7,6 +7,7 @@ import GameScreen from './components/GameScreen.vue';
 import EndScreen from './components/EndScreen.vue';
 import HotSeatGame from './components/HotSeatGame.vue';
 import MotusGame from './components/MotusGame.vue';
+import MillionaireGame from "@/components/MillionaireGame.vue";
 
 const gameState = ref('home');
 const targetGame = ref('feud');
@@ -50,6 +51,12 @@ const prepareMotus = () => {
   }
 };
 
+const prepareMillionaire = () => {
+  targetGame.value = 'millionaire';
+  if (teams.team1.name) gameState.value = 'millionaire';
+  else gameState.value = 'setup';
+};
+
 const handleSetupBack = () => {
   gameState.value = 'home';
 };
@@ -62,9 +69,9 @@ const launchGame = () => {
     gameState.value = 'game';
   } else if (targetGame.value === 'hotseat') {
     gameState.value = 'hotseat';
-  } else {
-    gameState.value = 'motus';
-  }
+  } else if (targetGame.value === 'motus') gameState.value = 'motus';
+  else gameState.value = 'millionaire';
+
 };
 
 const backToMenu = () => {
@@ -96,6 +103,7 @@ const hardReset = () => {
         @go-to-setup="prepareFeud"
         @go-to-hotseat="prepareHotSeat"
         @go-to-motus="prepareMotus"
+        @go-to-millionaire="prepareMillionaire"
         @reset-data="hardReset"
     />
 
@@ -126,6 +134,12 @@ const hardReset = () => {
 
     <MotusGame
         v-else-if="gameState === 'motus'"
+        :teams="teams"
+        @quit="backToMenu"
+    />
+
+    <MillionaireGame
+        v-else-if="gameState === 'millionaire'"
         :teams="teams"
         @quit="backToMenu"
     />

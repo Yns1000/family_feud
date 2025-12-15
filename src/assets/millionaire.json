@@ -1,0 +1,36 @@
+{
+  "team1": [
+    { "question": "What is the plural form of 'child'?", "options": ["A: Childs", "B: Children", "C: Childes", "D: Childrens"], "correct": 1, "value": 100 },
+    { "question": "Which verb is irregular?", "options": ["A: To play", "B: To visit", "C: To fly", "D: To walk"], "correct": 2, "value": 200 },
+    { "question": "If you are 'thirsty', you need...", "options": ["A: Food", "B: Sleep", "C: Money", "D: Water"], "correct": 3, "value": 300 },
+    { "question": "Which city is nicknamed 'The Big Apple'?", "options": ["A: Los Angeles", "B: New York", "C: London", "D: Sydney"], "correct": 1, "value": 500 },
+    { "question": "Complete the idiom: 'It's a piece of...'", "options": ["A: Cake", "B: Pie", "C: Cheese", "D: Bread"], "correct": 0, "value": 1000 },
+    { "question": "Which preposition fits? 'It depends ___ the weather.'", "options": ["A: of", "B: from", "C: on", "D: at"], "correct": 2, "value": 2000 },
+    { "question": "What do Americans call a 'lift'?", "options": ["A: Escalator", "B: Elevator", "C: Raiser", "D: Uppercase"], "correct": 1, "value": 4000 },
+    { "question": "Choose the correct tense: 'I ___ here since 2010.'", "options": ["A: live", "B: am living", "C: have lived", "D: was living"], "correct": 2, "value": 8000 },
+    { "question": "Which country is NOT part of the United Kingdom?", "options": ["A: Scotland", "B: Northern Ireland", "C: Republic of Ireland", "D: Wales"], "correct": 2, "value": 16000 },
+    { "question": "What does the phrasal verb 'to call off' mean?", "options": ["A: To telephone", "B: To shout", "C: To visit", "D: To cancel"], "correct": 3, "value": 32000 },
+    { "question": "Who was the first President of the United States?", "options": ["A: Abraham Lincoln", "B: Thomas Jefferson", "C: George Washington", "D: Benjamin Franklin"], "correct": 2, "value": 64000 },
+    { "question": "What does 'Once in a blue moon' mean?", "options": ["A: Very rarely", "B: Very often", "C: During the night", "D: When you are sad"], "correct": 0, "value": 125000 },
+    { "question": "Which King signed the Magna Carta in 1215?", "options": ["A: Henry VIII", "B: King John", "C: Richard the Lionheart", "D: William the Conqueror"], "correct": 1, "value": 250000 },
+    { "question": "Which letter does NOT appear in the name of any US State?", "options": ["A: X", "B: Z", "C: Q", "D: P"], "correct": 2, "value": 500000 },
+    { "question": "What is the official language of the United States?", "options": ["A: English", "B: American", "C: English & Spanish", "D: None at the federal level"], "correct": 3, "value": 1000000 }
+  ],
+  "team2": [
+    { "question": "What is the past participle of 'to go'?", "options": ["A: Went", "B: Goed", "C: Gone", "D: Going"], "correct": 2, "value": 100 },
+    { "question": "Which animal says 'Meow'?", "options": ["A: Dog", "B: Cat", "C: Cow", "D: Sheep"], "correct": 1, "value": 200 },
+    { "question": "Complete: 'He is good ___ maths.'", "options": ["A: in", "B: on", "C: at", "D: for"], "correct": 2, "value": 300 },
+    { "question": "What is the currency of the USA?", "options": ["A: Pound", "B: Euro", "C: Yen", "D: Dollar"], "correct": 3, "value": 500 },
+    { "question": "If it rains 'cats and dogs', it means...", "options": ["A: It's raining heavily", "B: Animals are falling", "C: It's windy", "D: It's sunny"], "correct": 0, "value": 1000 },
+    { "question": "What is the opposite of 'generous'?", "options": ["A: Mean", "B: Kind", "C: Happy", "D: Poor"], "correct": 0, "value": 2000 },
+    { "question": "What do the British call 'chips'?", "options": ["A: Fries", "B: Crisps", "C: Cookies", "D: Biscuits"], "correct": 1, "value": 4000 },
+    { "question": "Which word is a 'False Friend' in French?", "options": ["A: Table", "B: Danger", "C: Location", "D: Train"], "correct": 2, "value": 8000 },
+    { "question": "What is the capital city of Australia?", "options": ["A: Sydney", "B: Melbourne", "C: Canberra", "D: Perth"], "correct": 2, "value": 16000 },
+    { "question": "Which tense: 'By next year, I will have finished.'", "options": ["A: Future Simple", "B: Future Perfect", "C: Future Continuous", "D: Present Perfect"], "correct": 1, "value": 32000 },
+    { "question": "How many stripes are on the US flag?", "options": ["A: 10", "B: 12", "C: 13", "D: 50"], "correct": 2, "value": 64000 },
+    { "question": "What does 'To break the ice' mean?", "options": ["A: To make a drink", "B: To start a conversation", "C: To have an accident", "D: To feel cold"], "correct": 1, "value": 125000 },
+    { "question": "Who is the patron saint of England?", "options": ["A: St Patrick", "B: St Andrew", "C: St David", "D: St George"], "correct": 3, "value": 250000 },
+    { "question": "Which is the only US State with one syllable?", "options": ["A: Maine", "B: Ohio", "C: Utah", "D: Texas"], "correct": 0, "value": 500000 },
+    { "question": "What is the motto of the British Monarch?", "options": ["A: God Save the King", "B: Dieu et mon droit", "C: In God We Trust", "D: E Pluribus Unum"], "correct": 1, "value": 1000000 }
+  ]
+}
