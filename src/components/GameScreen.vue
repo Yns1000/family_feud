@@ -1,16 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import {
-  Mic,
-  Coins,
-  X,
-  TriangleAlert,
-  Eye,
-  EyeOff,
-  ArrowRight,
-  Flag,
-  Gavel
-} from 'lucide-vue-next';
+import { Mic, Coins, X, TriangleAlert, Eye, EyeOff, ArrowRight, Flag, Gavel } from 'lucide-vue-next';
 import questionsData from '../assets/questions.json';
 
 const props = defineProps(['teams']);
@@ -110,14 +100,17 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
       </div>
 
       <div class="center-panel">
+        <button @click="emit('quit')" class="exit-btn">EXIT</button>
+
         <div class="bank-display">
           <span class="bank-label">BANK</span>
           <span class="bank-amount">{{ roundScore }}</span>
         </div>
+
         <div class="strikes-container">
-          <div class="strike-bulb" :class="{ 'lit': strikesCount >= 1 }"><X :size="32" stroke-width="3" /></div>
-          <div class="strike-bulb" :class="{ 'lit': strikesCount >= 2 }"><X :size="32" stroke-width="3" /></div>
-          <div class="strike-bulb" :class="{ 'lit': strikesCount >= 3 }"><X :size="32" stroke-width="3" /></div>
+          <div class="strike-bulb" :class="{ 'lit': strikesCount >= 1 }"><X :size="28" stroke-width="4" /></div>
+          <div class="strike-bulb" :class="{ 'lit': strikesCount >= 2 }"><X :size="28" stroke-width="4" /></div>
+          <div class="strike-bulb" :class="{ 'lit': strikesCount >= 3 }"><X :size="28" stroke-width="4" /></div>
         </div>
       </div>
 
@@ -208,11 +201,23 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 
 .glass-header {
   width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 10px 40px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2); height: 160px; box-sizing: border-box;
+  padding: 15px 40px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  min-height: 180px;
+  box-sizing: border-box;
+  z-index: 50;
+  position: relative;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 }
 
-.center-panel { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.center-panel { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; gap: 10px; }
+
+.exit-btn {
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #aaa;
+  font-family: 'Anton'; font-size: 0.8rem; padding: 5px 15px; border-radius: 20px;
+  cursor: pointer; transition: all 0.2s;
+}
+.exit-btn:hover { background: rgba(231, 76, 60, 0.8); color: white; border-color: #e74c3c; }
 
 .team-badge {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -241,16 +246,16 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 .bank-display {
   text-align: center; background: linear-gradient(135deg, #2c3e50, #000000);
   padding: 5px 40px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-bottom: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 .bank-label { display: block; font-size: 0.8rem; color: #bdc3c7; letter-spacing: 2px; }
 .bank-amount { font-size: 3.5rem; font-weight: bold; color: white; }
 
-.strikes-container { display: flex; gap: 20px; }
+.strikes-container { display: flex; gap: 20px; margin-top: 5px; }
 .strike-bulb {
   font-family: Arial, sans-serif; font-weight: 900; font-size: 2rem;
   color: rgba(255, 255, 255, 0.2); background: rgba(0,0,0,0.3);
-  border: 2px solid rgba(255, 255, 255, 0.2); width: 50px; height: 50px;
+  border: 2px solid rgba(255, 255, 255, 0.2); width: 45px; height: 45px;
   display: flex; align-items: center; justify-content: center;
   border-radius: 50%; transition: all 0.2s;
 }
@@ -259,14 +264,17 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
   box-shadow: 0 0 20px #e74c3c, 0 0 40px #e74c3c; transform: scale(1.1);
 }
 
+/* CONTAINER PRINCIPAL MODIFIÉ : On pousse le contenu vers le bas */
 .board-container {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
   width: 100%; max-width: 1400px; margin: 0 auto;
+  padding-top: 20px; /* Ajoute de l'espace pour ne pas coller au Header */
+  z-index: 1;
 }
 
 .notification-area {
   display: flex; align-items: center; justify-content: center; width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   height: 60px;
 }
 
@@ -276,6 +284,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
   text-transform: uppercase; letter-spacing: 1px;
   box-shadow: 5px 5px 0px black;
   display: flex; align-items: center; gap: 15px;
+  z-index: 10;
 }
 
 .question-banner {
@@ -319,6 +328,4 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 @keyframes pulse-green { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(46, 204, 113, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
 @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
-.strike-anim-enter-active, .strike-anim-leave-active { transition: opacity 0.2s; } .strike-anim-enter-from, .strike-anim-leave-to { opacity: 0; }
-.pop-enter-active, .pop-leave-active { transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); } .pop-enter-from, .pop-leave-to { opacity: 0; transform: scale(0.5) translateY(20px); }
 </style>
