@@ -157,7 +157,7 @@ onUnmounted(() => clearInterval(timerInterval));
             <ArrowLeft :size="24" /> BACK
           </button>
           <button @click="startGame" class="start-btn">
-            START TIMER ⏱️
+            <Timer :size="32" stroke-width="2.5" /> START TIMER
           </button>
         </div>
       </div>
